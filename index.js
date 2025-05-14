@@ -1,4 +1,4 @@
-const AWSXRay = require('aws-xray-sdk');
+// const AWSXRay = require('aws-xray-sdk');
 const express = require('express');
 const cors = require('cors');
 const sequelize = require('./db');
@@ -13,20 +13,18 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-AWSXRay.captureHTTPsGlobal(require('http'));
+// AWSXRay.captureHTTPsGlobal(require('http'));
 
-app.use(AWSXRay.express.openSegment('bachelorproef-backend'));
+// app.use(AWSXRay.express.openSegment('bachelorproef-backend'));
 
 app.use(cors());
 app.use(express.json());
 
-AWSXRay.captureAsyncFunc('sequelize-sync', function (segment) {
   sequelize.sync().then(() => {
     console.log('Database gesynchroniseerd!');
   }).catch((err) => {
     console.error('Fout bij synchroniseren van de database:', err);
   });
-});
 
 app.get('/', (req, res) => {
   res.send('Welkom!');
@@ -66,7 +64,7 @@ app.post('/api/order', async (req, res) => {
   }
 });
 
-app.use(AWSXRay.express.closeSegment());
+// app.use(AWSXRay.express.closeSegment());
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
