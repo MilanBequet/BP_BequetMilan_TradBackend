@@ -1,11 +1,17 @@
-const  Product  = require('../models/Product.js');
-const  Size  = require('../models/Size.js');
+const initializeModels = require('../models/index.js');
 
-const getAllProducts = async () => {
+async function main() {
+  const models = await initializeModels();
+
+  const products = await getAllProducts(models);
+  console.log(products);
+}
+
+const getAllProducts = async (models) => {
   try {
-    const products = await Product.findAll({
+    const products = await models.Product.findAll({
       include: [{
-        model: Size,
+        model: models.Size,
         through: { attributes: [] }
       }]
     });
@@ -15,11 +21,11 @@ const getAllProducts = async () => {
   }
 };
 
-const getProductById = async (id) => {
+const getProductById = async (models, id) => {
   try {
-    const product = await Product.findByPk(id, {
+    const product = await models.Product.findByPk(id, {
       include: [{
-        model: Size,
+        model: models.Size,
         attributes: ['name'],
       }],
     });
@@ -32,5 +38,7 @@ const getProductById = async (id) => {
     throw new Error('Fout bij het ophalen van het product: ' + err.message);
   }
 };
+
+main().catch(console.error);
 
 module.exports = { getAllProducts, getProductById };
