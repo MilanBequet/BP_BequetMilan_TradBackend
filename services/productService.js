@@ -1,34 +1,19 @@
 const initializeModels = require('../models/index.js');
 
-async function main() {
-  const models = await initializeModels();
-
-  const products = await getAllProducts(models);
-  console.log(products);
-}
-
-const getAllProducts = async (models) => {
+const getAllProducts = async () => {
   try {
-    const products = await models.Product.findAll({
-      include: [{
-        model: models.Size,
-        through: { attributes: [] }
-      }]
-    });
+    const { Product } = await initializeModels();
+    const products = await Product.findAll();
     return products;
   } catch (err) {
     throw new Error('Fout bij het ophalen van de producten: ' + err.message);
   }
 };
 
-const getProductById = async (models, id) => {
+const getProductById = async (id) => {
   try {
-    const product = await models.Product.findByPk(id, {
-      include: [{
-        model: models.Size,
-        attributes: ['name'],
-      }],
-    });
+    const { Product } = await initializeModels();
+    const product = await Product.findByPk(id);
 
     if (!product) {
       throw new Error('Product niet gevonden');
@@ -39,6 +24,5 @@ const getProductById = async (models, id) => {
   }
 };
 
-main().catch(console.error);
 
 module.exports = { getAllProducts, getProductById };

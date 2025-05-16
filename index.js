@@ -1,6 +1,5 @@
 const express = require('express');
 const cors = require('cors');
-const sequelize = require('./db');
 const initializeModels = require('./models/index');
 require('./models/associations');
 const { getAllProducts, getProductById } = require('./services/productService');
@@ -19,7 +18,7 @@ let models;
 
 (async () => {
   models = await initializeModels();
-  await sequelize.sync();
+  await models.sequelize.sync();
   console.log('Database gesynchroniseerd!');
 
   // Routes pas hier definiëren, nu 'models' beschikbaar is
@@ -29,7 +28,7 @@ let models;
 
   app.get('/api/products', async (req, res) => {
     try {
-      const products = await getAllProducts(models);
+      const products = await getAllProducts();
       res.json(products);
     } catch (err) {
       console.error('Fout bij het ophalen van producten:', err);
@@ -40,7 +39,7 @@ let models;
   app.get('/api/products/:id', async (req, res) => {
     const { id } = req.params;
     try {
-      const product = await getProductById(models, id);
+      const product = await getProductById(id);
       res.json(product);
     } catch (error) {
       console.error(error);
@@ -52,7 +51,7 @@ let models;
   const { firstname, name, email, address, phone, cart } = req.body;
 
   try {
-    const order = await createOrder(models, { firstname, name, email, address, phone, cart });
+    const order = await createOrder({ firstname, name, email, address, phone, cart });
     return res.status(201).json({ message: 'Bestelling succesvol ontvangen!', order });
   } catch (err) {
     console.error('Error bij het verwerken van de bestelling:', err);

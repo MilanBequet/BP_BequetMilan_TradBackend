@@ -1,6 +1,6 @@
-const { Model, DataTypes } = require('sequelize');
+const { Model } = require('sequelize');
 
-module.exports = (sequelize, ProductModel) => {
+module.exports = (sequelize, ProductModel, DataTypes) => {
   class Order extends Model {}
 
   Order.init({

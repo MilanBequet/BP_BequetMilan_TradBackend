@@ -1,12 +1,14 @@
 const initializeModels = require('../models/index.js');
 
-const createOrder = async (models, { firstname, name, email, address, phone, cart }) => {
+const createOrder = async ( { firstname, name, email, address, phone, cart }) => {
   if (!firstname || !name || !email || !address || !phone || !cart || cart.length === 0) {
     throw new Error('Vul alle velden in en voeg producten toe aan je bestelling.');
   }
 
   try {
-    const order = await models.Order.create({
+    const { Order, OrderProducts } = await require('../models')();
+
+    const order = await Order.create({
       firstname,
       name,
       email,
@@ -21,7 +23,7 @@ const createOrder = async (models, { firstname, name, email, address, phone, car
       quantity: item.quantity || 1,
     }));
 
-    await models.OrderProducts.bulkCreate(orderProducts);
+    await OrderProducts.bulkCreate(orderProducts);
 
     return order;
   } catch (err) {

@@ -15,7 +15,7 @@ async function initializeModels() {
   models.Product = initProduct(sequelize, require('sequelize').DataTypes);
   models.Size = initSize(sequelize, require('sequelize').DataTypes);
   models.OrderProducts = initOrderProducts(sequelize, require('sequelize').DataTypes);
-  models.Order = initOrder(sequelize, models.Product);
+  models.Order = initOrder(sequelize, models.Product, require('sequelize').DataTypes);
 
   setupAssociations(models);
 
